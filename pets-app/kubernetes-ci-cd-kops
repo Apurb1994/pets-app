@@ -1,0 +1,32 @@
+pipeline{
+  agent any
+  tools{
+  maven 'maven3'
+  }
+  stages{
+    stage('Maven Build')
+    {
+     sh 'mvn clean install'
+    }
+    stage('Build Docker Image')
+    {
+    sh "docker build -t Apurb1994/apurb1994/converse-2020 ."
+    }
+    stage('Docker push')
+    {
+    sh "docker login -u Apurb1994 -p *****"
+    sh "docker push Apurb1994/apurb1994/converse-2020:v1"
+    }
+    stage('Deploy k8s')
+    {
+    kubernetesDeploy configs: 'pods.yml',
+    kubeConfig: [path: ''],
+    kubeconfigId: 'kubernetes-kops',
+    secretName: '',
+    ssh: [sshCredentialsId: '*', sshServer: ''],
+    textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
+    }
+  }
+
+
+}
