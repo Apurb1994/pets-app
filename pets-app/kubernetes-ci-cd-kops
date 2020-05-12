@@ -6,26 +6,32 @@ pipeline{
   stages{
     stage('Maven Build')
     {
+      steps{
      sh 'mvn clean install'
+     }
     }
     stage('Build Docker Image')
     {
+    steps{
     sh "docker build -t Apurb1994/apurb1994/converse-2020 ."
-    }
+    }}
     stage('Docker push')
+    {
+    steps
     {
     sh "docker login -u Apurb1994 -p *****"
     sh "docker push Apurb1994/apurb1994/converse-2020:v1"
-    }
+    }}
     stage('Deploy k8s')
     {
+    steps{
     kubernetesDeploy configs: 'pods.yml',
     kubeConfig: [path: ''],
     kubeconfigId: 'kubernetes-kops',
     secretName: '',
     ssh: [sshCredentialsId: '*', sshServer: ''],
     textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
-    }
+    }}
   }
 
 
