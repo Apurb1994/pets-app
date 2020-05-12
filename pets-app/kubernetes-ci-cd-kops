@@ -19,8 +19,11 @@ pipeline{
     {
     steps
     {
+    withCredentials([string(credentialsId: 'Apurbarsa1994', variable: 'dockerHubaswd')]) {
     sh "docker login -u Apurb1994 -p *****"
     sh "docker push Apurb1994/apurb1994/converse-2020:v1"
+      }
+   
     }}
     stage('Deploy k8s')
     {
